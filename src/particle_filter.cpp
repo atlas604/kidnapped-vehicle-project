@@ -150,7 +150,7 @@ void ParticleFilter::resample() {
 	discrete_distribution<> d(weights.begin(), weights.end());
 	map<int, int> m;
 
-	for (int i=0; i<num_particles; ++i)	{
+	for (int i=0; i<num_particles; ++i) {
 		Particle particle_res = particles[d(gen)];
 		particles.push_back(particle_res);
 	}
