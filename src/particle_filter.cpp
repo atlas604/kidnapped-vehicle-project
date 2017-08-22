@@ -131,7 +131,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			double ey = pow(y_-mu_y,2)/(2*pow(std_landmark[1],2));
 			double weight_ = 1/(2*M_PI*std_landmark[0]*std_landmark[1])*exp(-(ex+ey));
 
-			if(weight_ > 0) {
+			if (weight_ > 0) {
 				particles[i].weight = weight_;
 			}
 		}
