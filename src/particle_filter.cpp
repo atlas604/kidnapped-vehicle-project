@@ -105,21 +105,17 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   and the following is a good resource for the actual equation to implement (look at equation 3.33)
 	//   http://planning.cs.uiuc.edu/node99.html
 
+	vector<LandmarkObs> trans_observations;
+	LandmarkObs obs;
+
 	for (int i=0; i<num_particles; i++) {
-		vector<LandmarkObs> trans_observations;
-		LandmarkObs obs;
-
-		for (int j=0; j<observations.size(); j++) {
-			LandmarkObs trans_obs;
-			obs = observations[j];
-
-			// perform the space transfomation from vehicle to map
-			trans_obs.x = particles[i].x + (obs.x*cos(particles[i].theta) - obs.y*sin(particles[i].theta));
-			trans_obs.y = particles[i].y + (obs.x*sin(particles[i].theta) + obs.y*cos(particles[i].theta));
-			trans_observations.push_back(trans_obs);
-		}
 
 		particles[i].weight = 1.0;
+
+		// marker observation transformation (vehicle coordinates -> map coordinates)
+		obs.x = particles[i].x + (observations[i].x*cos(particles[i].theta) - observations[i].y*sin(particles[i].theta));
+		obs.y = particles[i].y + (observations[i].x*sin(particles[i].theta) + observations[i].y*cos(particles[i].theta));
+		trans_observations.push_back(obs);
 
 		for (int j=0; j<trans_observations.size(); j++) {
 			double x_ = trans_observations[j].x;
@@ -132,7 +128,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			double weight_ = 1/(2*M_PI*std_landmark[0]*std_landmark[1])*exp(-(ex+ey));
 
 			if (weight_ > 0) {
-				particles[i].weight = weight_;
+				particles[i].weight *= weight_;
 			}
 		}
 
@@ -150,7 +146,7 @@ void ParticleFilter::resample() {
 	discrete_distribution<> d(weights.begin(), weights.end());
 	map<int, int> m;
 
-	for (int i=0; i<num_particles; ++i) {
+	for (int i=0; i<num_particles; ++i)	{
 		Particle particle_res = particles[d(gen)];
 		particles.push_back(particle_res);
 	}
