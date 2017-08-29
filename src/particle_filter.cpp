@@ -26,7 +26,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
-	num_particles = 100;
+	num_particles = 50;
 
 	default_random_engine gen;
 
@@ -127,7 +127,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				double mu_y = map_landmarks.landmark_list[k].y_f;
 				double measured_distance = sqrt(pow(x_-mu_x,2)+pow(y_-mu_y,2));
 
-				if (measured_distance < sensor_range) {
+				if (measured_distance < 5) {
 
 					double ex = pow(x_-mu_x,2)/(2*pow(std_landmark[0],2));
 					double ey = pow(y_-mu_y,2)/(2*pow(std_landmark[1],2));
